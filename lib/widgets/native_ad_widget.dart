@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
@@ -5,7 +7,11 @@ class NativeAdWidget extends StatefulWidget {
   final String adUnitId;
   final double height;
 
-  const NativeAdWidget({super.key, required this.adUnitId, this.height = 350});
+  const NativeAdWidget({
+    super.key,
+    required this.adUnitId,
+    this.height = 100,
+  });
 
   @override
   State<NativeAdWidget> createState() => _NativeAdWidgetState();
@@ -13,6 +19,7 @@ class NativeAdWidget extends StatefulWidget {
 
 class _NativeAdWidgetState extends State<NativeAdWidget> {
   NativeAd? _nativeAd;
+  Timer? _retryTimer;
   bool _isAdLoaded = false;
 
   @override
@@ -22,77 +29,77 @@ class _NativeAdWidgetState extends State<NativeAdWidget> {
   }
 
   @override
+  void didUpdateWidget(covariant NativeAdWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.adUnitId != widget.adUnitId) {
+      _retryTimer?.cancel();
+      _nativeAd?.dispose();
+      _nativeAd = null;
+      _isAdLoaded = false;
+      _loadNativeAd();
+    }
+  }
+
+  @override
   void dispose() {
+    _retryTimer?.cancel();
     _nativeAd?.dispose();
+    _nativeAd = null;
     super.dispose();
   }
 
   void _loadNativeAd() {
-    _nativeAd = NativeAd(
+    if (!mounted) return;
+    final ad = NativeAd(
       adUnitId: widget.adUnitId,
       request: const AdRequest(),
-      factoryId: 'defaultNative', // ✅ CORRECT: Matches your registered factory
+      factoryId: 'defaultNative',
       listener: NativeAdListener(
-        onAdLoaded: (ad) {
-          print('✅ Native ad loaded successfully');
+        onAdLoaded: (loadedAd) {
+          if (!mounted) {
+            loadedAd.dispose();
+            return;
+          }
           setState(() {
+            _nativeAd = loadedAd as NativeAd;
             _isAdLoaded = true;
           });
         },
-        onAdFailedToLoad: (ad, error) {
-          print('❌ Native ad failed to load: $error');
-          ad.dispose();
-          // Retry after 30 seconds
-          Future.delayed(const Duration(seconds: 30), _loadNativeAd);
+        onAdFailedToLoad: (failedAd, error) {
+          failedAd.dispose();
+          if (!mounted) return;
+          _nativeAd = null;
+          setState(() => _isAdLoaded = false);
+          _retryTimer?.cancel();
+          _retryTimer = Timer(const Duration(seconds: 30), () {
+            if (mounted) _loadNativeAd();
+          });
+          debugPrint('AdMob native ad failed to load: $error');
         },
-        onAdClicked: (ad) => print('Ad clicked'),
-        onAdImpression: (ad) => print('Ad impression recorded'),
       ),
-    )..load();
+    );
+    _nativeAd = ad;
+    ad.load();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (!_isAdLoaded) {
-      return _buildAdPlaceholder();
+    final ad = _nativeAd;
+    if (!_isAdLoaded || ad == null) {
+      return SizedBox(
+        height: widget.height,
+        child: const Center(
+          child: Text(
+            'Advertisement',
+            style: TextStyle(fontSize: 10, color: Colors.grey),
+          ),
+        ),
+      );
     }
 
-    return Container(
+    return SizedBox(
       height: widget.height,
-      decoration: BoxDecoration(
-        color: Colors.grey[900],
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.green, width: 1),
-      ),
-      child: AdWidget(ad: _nativeAd!),
-    );
-  }
-
-  Widget _buildAdPlaceholder() {
-    return Container(
-      height: widget.height,
-      decoration: BoxDecoration(
-        color: Colors.grey[900],
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.green, width: 1),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.ads_click, size: 50, color: Colors.green[300]),
-          const SizedBox(height: 10),
-          Text(
-            'Ad Loading...',
-            style: TextStyle(
-              color: Colors.green,
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 5),
-          const CircularProgressIndicator(color: Colors.green),
-        ],
-      ),
+      child: AdWidget(ad: ad),
     );
   }
 }
