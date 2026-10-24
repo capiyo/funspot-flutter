@@ -7,7 +7,6 @@ import '../../models/fixture_models.dart';
 import '../../services/notification_service.dart';
 import "../../pages/fan_Funzy_design.dart";
 import '../../utils/add_helper.dart';
-import '../../widgets/native_ad_widget.dart';
 import 'package:intl/intl.dart';
 import '../../main.dart';
 import '../../services/auth_service.dart';
@@ -1261,14 +1260,6 @@ class _ComradeModalState extends State<ComradeModal>
                 ...members.map((c) => _buildMemberCard(c)),
                 if (members.isEmpty && champion == null)
                   _buildEmptyState('No comrades found'),
-                const SizedBox(height: 12),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 14),
-                  child: NativeAdWidget(
-                    adUnitId: AdHelper.postsFeedNativeAdUnitId,
-                    height: 100,
-                  ),
-                ),
               ],
             ),
           );
