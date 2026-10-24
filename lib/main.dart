@@ -4228,10 +4228,8 @@ void _loadHeavyDataInBackground() {
 // ============================================================================
 Future<void> main() async {
   final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-  // AdMob is configured with Android-specific app/ad unit IDs. Keep iOS ads
-  // disabled until the iOS AdMob App ID and ad units are provisioned.
-  if (!kIsWeb && Platform.isAndroid) {
-    await MobileAds.instance.initialize();
+  if (!kIsWeb) {
+    MobileAds.instance.initialize();
   }
 
   final splashPrefs = await SharedPreferences.getInstance();
