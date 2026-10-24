@@ -3,7 +3,7 @@ import 'dart:js_interop_unsafe';
 import 'dart:ui_web' as ui_web;
 import 'package:web/web.dart' as web;
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart' show kIsWeb, kDebugMode, debugPrint;
+import 'package:flutter/foundation.dart' show kIsWeb, debugPrint;
 import '../utils/add_helper.dart';
 
 // Module-level counter — guarantees every mounted ad card gets a unique
@@ -31,18 +31,10 @@ class _WebNativeAdCardState extends State<WebNativeAdCard> {
   bool _isFilled = false;
   web.HTMLElement? _insElement;
 
-  bool get _adsEnabled =>
-      kIsWeb &&
-      !kDebugMode &&
-      const {'funspot.co.ke', 'www.funspot.co.ke'}
-          .contains(web.window.location.hostname);
-
   @override
   void initState() {
     super.initState();
     assert(kIsWeb, 'WebNativeAdCard must only be mounted when kIsWeb is true.');
-    // Do not make live ad requests from localhost or provider preview domains.
-    if (!_adsEnabled) return;
 
     final slots = AdHelper.adSenseInFeedSlotIds;
     _slotId = slots[widget.slotIndex % slots.length];
@@ -121,13 +113,9 @@ class _WebNativeAdCardState extends State<WebNativeAdCard> {
 
   @override
   Widget build(BuildContext context) {
-    if (!_adsEnabled) return const SizedBox.shrink();
-
-    // Mount the platform view immediately so its factory can create the <ins>
-    // element before _pushAd() runs. Hiding the HtmlElementView until a fill
-    // is confirmed deadlocks the old flow: no view factory means no <ins>,
-    // so the fill-status poll can never succeed.
-    if (_checkedFill && !_isFilled) {
+    // Nothing to show yet, or confirmed no fill — collapse to zero height
+    // instead of reserving blank space.
+    if (!_checkedFill || !_isFilled) {
       return const SizedBox.shrink();
     }
 
