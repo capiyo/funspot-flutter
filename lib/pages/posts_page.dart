@@ -19,18 +19,58 @@ import '../main.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:video_player/video_player.dart';
-import '../widgets/native_ad_widget.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 // ========== GLOBAL POSTS CACHE MANAGER ==========
-class NativeAdCard extends StatelessWidget {
+class NativeAdCard extends StatefulWidget {
   final String adUnitId;
   const NativeAdCard({super.key, required this.adUnitId});
 
   @override
+  State<NativeAdCard> createState() => _NativeAdCardState();
+}
+
+class _NativeAdCardState extends State<NativeAdCard> {
+  NativeAd? _ad;
+  bool _loaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _ad = NativeAd(
+      adUnitId: widget.adUnitId,
+      factoryId: 'listTile', // must be registered natively on Android/iOS
+      listener: NativeAdListener(
+        onAdLoaded: (ad) {
+          if (mounted) setState(() => _loaded = true);
+        },
+        onAdFailedToLoad: (ad, error) {
+          debugPrint('❌ Native ad failed: $error');
+          ad.dispose();
+        },
+      ),
+      request: const AdRequest(),
+    )..load();
+  }
+
+  @override
+  void dispose() {
+    _ad?.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return NativeAdWidget(adUnitId: adUnitId, height: 100);
+    if (!_loaded || _ad == null) return const SizedBox.shrink();
+    return Container(
+      margin: const EdgeInsets.only(bottom: 1),
+      constraints: const BoxConstraints(minHeight: 90, maxHeight: 350),
+      child: AdWidget(ad: _ad!),
+    );
   }
 }
+
+
 
 class GlobalPostsCacheManager {
   static final GlobalPostsCacheManager _instance =
