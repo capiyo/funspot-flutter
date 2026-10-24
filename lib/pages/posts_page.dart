@@ -39,7 +39,7 @@ class _NativeAdCardState extends State<NativeAdCard> {
     super.initState();
     _ad = NativeAd(
       adUnitId: widget.adUnitId,
-      factoryId: 'listTile', // must be registered natively on Android/iOS
+      factoryId: 'defaultNative', // registered by the Android MainActivity
       listener: NativeAdListener(
         onAdLoaded: (ad) {
           if (mounted) setState(() => _loaded = true);
