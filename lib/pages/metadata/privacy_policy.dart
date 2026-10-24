@@ -47,7 +47,7 @@ class PrivacyPolicyPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    'Your privacy is important to us at Funzy. This Privacy Policy explains how we collect, use, and protect your personal information when you use our social media, fixture viewing, and voting platform.',
+                    'Your privacy is important to us at Funspot. This Privacy Policy explains how we collect, use, and protect your information when you use our website, social features, fixture viewing, and voting platform.',
                     style: FanTypography.body.copyWith(
                       color: FanColors.textSecondary,
                       height: 1.6,
@@ -132,6 +132,7 @@ class PrivacyPolicyPage extends StatelessWidget {
               content: [
                 '• **Public Information**: Your username, votes, and comments are visible to other users',
                 '• **Service Providers**: We may share data with trusted third parties who help operate our app',
+                '• **Advertising**: Google Mobile Ads (AdMob) may process device identifiers, IP address, app activity, ad views, and ad interactions to deliver ads, measure performance, and prevent fraud. On the website, Google AdSense may use cookies or similar technologies for advertising.',
                 '• **Legal Requirements**: We may disclose information if required by law',
                 '• **Business Transfers**: In case of merger or acquisition, your data may be transferred',
               ],
