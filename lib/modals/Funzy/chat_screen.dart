@@ -5768,39 +5768,39 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
         child: Column(
           children: [
             // Keep the rotating match/comrade/ad carousel as the only top
-            // element. Remove the messaging AppBar so the screen follows the
-            // same uncluttered layout and FanColors palette as the app.
+            // element. Messaging controls remain available through in-chat
+            // actions and system back navigation.
             _buildCarousel(),
 
             // Votes Section (animated)
-          AnimatedCrossFade(
-            duration: const Duration(milliseconds: 250),
-            crossFadeState: _showVotesSection && _voters.isNotEmpty
-                ? CrossFadeState.showFirst
-                : CrossFadeState.showSecond,
-            firstChild: _buildVotesSection(),
-            secondChild: const SizedBox.shrink(),
-          ),
+            AnimatedCrossFade(
+              duration: const Duration(milliseconds: 250),
+              crossFadeState: _showVotesSection && _voters.isNotEmpty
+                  ? CrossFadeState.showFirst
+                  : CrossFadeState.showSecond,
+              firstChild: _buildVotesSection(),
+              secondChild: const SizedBox.shrink(),
+            ),
 
-          // Chat Messages
-          Expanded(
-            child: _messages.isEmpty
-                ? _buildEmptyState()
-                : ListView.builder(
-                    controller: _chatScroll,
-                    padding: const EdgeInsets.only(
-                        left: 8, right: 8, top: 6, bottom: 60),
-                    itemCount: _messages.length,
-                    itemBuilder: (context, index) {
-                      final message = _messages[index];
-                      return _buildMessageBubble(
-                          message, message.userId == widget.userId, index);
-                    },
-                  ),
-          ),
+            // Chat Messages
+            Expanded(
+              child: _messages.isEmpty
+                  ? _buildEmptyState()
+                  : ListView.builder(
+                      controller: _chatScroll,
+                      padding: const EdgeInsets.only(
+                          left: 8, right: 8, top: 6, bottom: 60),
+                      itemCount: _messages.length,
+                      itemBuilder: (context, index) {
+                        final message = _messages[index];
+                        return _buildMessageBubble(
+                            message, message.userId == widget.userId, index);
+                      },
+                    ),
+            ),
 
-          // Typing Indicator
-          _buildTypingIndicator(),
+            // Typing Indicator
+            _buildTypingIndicator(),
 
             // Input Bar
             _buildInputBar(),
