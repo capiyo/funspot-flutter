@@ -9,7 +9,6 @@ import '../modals/login_modal.dart';
 import 'package:flutter/foundation.dart' show kIsWeb, kDebugMode, compute;
 import '../modals/FAB/add_post_modal.dart';
 import '../widgets/web_native_ad_card.dart';
-import '../widgets/native_ad_widget.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import '../modals/homepage/notifications_modal.dart';
@@ -3286,19 +3285,17 @@ class _HomePageState extends State<HomePage>
   }
 
   final adUnitId = item.adUnitId ?? '';
-  if (adUnitId.isEmpty || (!kIsWeb && !Platform.isAndroid)) {
-    // Native ad units are Android-specific. iOS placements stay hidden until
-    // the matching iOS app ID and ad-unit IDs are configured.
+  if (adUnitId.isEmpty) {
     return const SizedBox.shrink();
   }
 
   return SpeechBubble(
     isLeftAligned: isLeftAligned,
     child: SizedBox(
-      height: 100,
+      height: 55,
       child: kIsWeb
           ? WebNativeAdCard(slotIndex: index)
-          : NativeAdWidget(adUnitId: adUnitId, height: 100),
+          : NativeAdCard(adUnitId: adUnitId),
     ),
   );
 }
