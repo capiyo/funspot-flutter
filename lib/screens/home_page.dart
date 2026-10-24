@@ -3286,7 +3286,9 @@ class _HomePageState extends State<HomePage>
   }
 
   final adUnitId = item.adUnitId ?? '';
-  if (adUnitId.isEmpty) {
+  if (adUnitId.isEmpty || (!kIsWeb && !Platform.isAndroid)) {
+    // Native ad units are Android-specific. iOS placements stay hidden until
+    // the matching iOS app ID and ad-unit IDs are configured.
     return const SizedBox.shrink();
   }
 
