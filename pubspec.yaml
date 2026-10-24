@@ -91,7 +91,7 @@ flutter_launcher_icons:
   android: true
   ios: true
   image_path: "assets/icons/funspot.png"
-  adaptive_icon_background: "#121A30"
+  adaptive_icon_background: "#0F1E27"
   adaptive_icon_foreground: "assets/icons/funspot.png"
   remove_alpha_ios: true
 
@@ -108,7 +108,7 @@ flutter_native_splash:
   color: "#FFFFFF"
   image: assets/icons/funspot.png
 
-  color_dark: "#121A30"
+  color_dark: "#0F1E27"
   image_dark: assets/icons/funspot.png
 
   android_gravity: center
@@ -122,4 +122,4 @@ flutter_native_splash:
     icon_background_color: "#FFFFFF"
 
     image_dark: assets/icons/funspot.png
-    icon_background_color_dark: "#121A30"
+    icon_background_color_dark: "#0F1E27"
