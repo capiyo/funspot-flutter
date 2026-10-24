@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart' show defaultTargetPlatform, kIsWeb, TargetPlatform;
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
@@ -22,16 +23,19 @@ class _NativeAdWidgetState extends State<NativeAdWidget> {
   Timer? _retryTimer;
   bool _isAdLoaded = false;
 
+  bool get _adsSupported =>
+      !kIsWeb && defaultTargetPlatform == TargetPlatform.android;
+
   @override
   void initState() {
     super.initState();
-    _loadNativeAd();
+    if (_adsSupported) _loadNativeAd();
   }
 
   @override
   void didUpdateWidget(covariant NativeAdWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.adUnitId != widget.adUnitId) {
+    if (oldWidget.adUnitId != widget.adUnitId && _adsSupported) {
       _retryTimer?.cancel();
       _nativeAd?.dispose();
       _nativeAd = null;
@@ -49,7 +53,7 @@ class _NativeAdWidgetState extends State<NativeAdWidget> {
   }
 
   void _loadNativeAd() {
-    if (!mounted) return;
+    if (!mounted || !_adsSupported || widget.adUnitId.isEmpty) return;
     final ad = NativeAd(
       adUnitId: widget.adUnitId,
       request: const AdRequest(),
@@ -84,6 +88,7 @@ class _NativeAdWidgetState extends State<NativeAdWidget> {
 
   @override
   Widget build(BuildContext context) {
+    if (!_adsSupported || widget.adUnitId.isEmpty) return const SizedBox.shrink();
     final ad = _nativeAd;
     if (!_isAdLoaded || ad == null) {
       return SizedBox(
