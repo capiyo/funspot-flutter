@@ -113,9 +113,11 @@ class _WebNativeAdCardState extends State<WebNativeAdCard> {
 
   @override
   Widget build(BuildContext context) {
-    // Nothing to show yet, or confirmed no fill — collapse to zero height
-    // instead of reserving blank space.
-    if (!_checkedFill || !_isFilled) {
+    // Mount the platform view immediately so its factory can create the <ins>
+    // element before _pushAd() runs. Hiding the HtmlElementView until a fill
+    // is confirmed deadlocks the old flow: no view factory means no <ins>,
+    // so the fill-status poll can never succeed.
+    if (_checkedFill && !_isFilled) {
       return const SizedBox.shrink();
     }
 
