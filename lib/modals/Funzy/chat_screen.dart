@@ -5762,41 +5762,17 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: FanColors.background,
-      appBar: AppBar(
-        backgroundColor: FanColors.background,
-        elevation: 0,
-        leadingWidth: widget.fixture != null ? 72 : 48,
-        leading: Row(
+      body: SafeArea(
+        top: true,
+        bottom: false,
+        child: Column(
           children: [
-            IconButton(
-              icon: Icon(Icons.arrow_back_rounded,
-                  color: FanColors.textPrimary, size: 18),
-              padding: const EdgeInsets.only(left: 4),
-              onPressed: () => Navigator.pop(context, _messageSent),
-            ),
-            if (widget.fixture != null)
-              IconButton(
-                icon: Icon(Icons.info_outline_rounded,
-                    color: FanColors.textPrimary, size: 16),
-                padding: EdgeInsets.zero,
-                onPressed: _openMatchDetails,
-                tooltip: 'Match Details',
-              ),
-          ],
-        ),
-        title: _buildCarousel(),
-        actions: [
-          IconButton(
-            icon:
-                Icon(Icons.people_alt, color: FanColors.textPrimary, size: 18),
-            padding: const EdgeInsets.only(right: 8),
-            onPressed: _showLeaderboard,
-          ),
-        ],
-      ),
-      body: Column(
-        children: [
-          // Votes Section (animated)
+            // Keep the rotating match/comrade/ad carousel as the only top
+            // element. Remove the messaging AppBar so the screen follows the
+            // same uncluttered layout and FanColors palette as the app.
+            _buildCarousel(),
+
+            // Votes Section (animated)
           AnimatedCrossFade(
             duration: const Duration(milliseconds: 250),
             crossFadeState: _showVotesSection && _voters.isNotEmpty
@@ -5826,9 +5802,10 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
           // Typing Indicator
           _buildTypingIndicator(),
 
-          // Input Bar
-          _buildInputBar(),
-        ],
+            // Input Bar
+            _buildInputBar(),
+          ],
+        ),
       ),
     );
   }
