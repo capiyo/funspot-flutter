@@ -9,6 +9,7 @@ import '../modals/login_modal.dart';
 import 'package:flutter/foundation.dart' show kIsWeb, kDebugMode, compute;
 import '../modals/FAB/add_post_modal.dart';
 import '../widgets/web_native_ad_card.dart';
+import '../widgets/native_ad_widget.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import '../modals/homepage/notifications_modal.dart';
@@ -3292,10 +3293,10 @@ class _HomePageState extends State<HomePage>
   return SpeechBubble(
     isLeftAligned: isLeftAligned,
     child: SizedBox(
-      height: 55,
+      height: 100,
       child: kIsWeb
           ? WebNativeAdCard(slotIndex: index)
-          : NativeAdCard(adUnitId: adUnitId),
+          : NativeAdWidget(adUnitId: adUnitId, height: 100),
     ),
   );
 }
