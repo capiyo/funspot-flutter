@@ -18,6 +18,8 @@ import '../../services/toast_helper.dart';
 import '../../services/notification_service.dart';
 import '../../services/bet_service.dart' as bet_service;
 import '../../services/payment_service.dart';
+import '../../utils/add_helper.dart';
+import '../../widgets/native_ad_widget.dart';
 
 // ============================================================================
 // VOTE STATS - No Draw
@@ -4120,6 +4122,13 @@ class _SwipeableVotePledgeModalState extends State<SwipeableVotePledgeModal>
             )
           else
             Expanded(child: _buildVotesFragment()),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: NativeAdWidget(
+              adUnitId: AdHelper.postsFeedNativeAdUnitId,
+              height: 100,
+            ),
+          ),
           _buildBottomButton(),
         ],
       ),
