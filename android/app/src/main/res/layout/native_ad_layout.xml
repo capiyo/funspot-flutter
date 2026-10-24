@@ -11,21 +11,6 @@
         android:padding="6dp"
         android:minHeight="100dp">
 
-        <!-- Explicit ad attribution; keep it visible in every native placement. -->
-        <TextView
-            android:id="@+id/ad_attribution"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginEnd="6dp"
-            android:paddingHorizontal="4dp"
-            android:paddingVertical="2dp"
-            android:text="Ad"
-            android:textSize="10sp"
-            android:textStyle="bold"
-            android:textColor="#FFFFFF"
-            android:background="#4A5560" />
-
         <!-- Small icon -->
         <ImageView
             android:id="@+id/ad_app_icon"
